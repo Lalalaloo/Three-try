@@ -1,4 +1,6 @@
 import * as THREE from "three";
+import {OrbitControls} from 'jsm/controls/OrbitControls.js';
+
 
 // basically the painter? creating a new objext, the antialias smooths outs edges.
 const renderer = new THREE.WebGLRenderer({antialias: true});
@@ -32,6 +34,10 @@ const camera = new THREE.PerspectiveCamera(fov, aspect, near, far);
 camera.position.z = 2;
 const scene = new THREE.Scene();
 
+// letting the mouse conrtol the orbit.
+const controls = new OrbitControls(camera, renderer.domElement)
+controls.enableDamping = true;
+controls.dampingFactor = 0.03;
 //creating a new geometry, giving it material and color.
 const geo = new THREE.IcosahedronGeometry(1.0,3) //(1.0, 3) the 1.0 controls the radius, the 3 controls the subdivisions.
 const mat = new THREE.MeshStandardMaterial({
@@ -63,8 +69,9 @@ scene.add(hemLight);
 //so we can reuse the animation.
 function animate(t = 0){
     requestAnimationFrame(animate);
-    mesh.rotation.y = t * 0.0003; //every 10 secs.
+    //mesh.rotation.y = t * 0.0003; //every 10 secs.
     renderer.render(scene, camera)
+    controls.update();
 };
 
 animate();
