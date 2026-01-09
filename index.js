@@ -35,11 +35,14 @@ camera.position.z = 2;
 const scene = new THREE.Scene();
 
 // letting the mouse conrtol the orbit.
+//also adding a slow down when you let go.
 const controls = new OrbitControls(camera, renderer.domElement)
 controls.enableDamping = true;
-controls.dampingFactor = 0.03;
+controls.dampingFactor = 0.01;
+
+
 //creating a new geometry, giving it material and color.
-const geo = new THREE.IcosahedronGeometry(1.0,3) //(1.0, 3) the 1.0 controls the radius, the 3 controls the subdivisions.
+const geo = new THREE.IcosahedronGeometry(1.0,2) //(1.0, 3) the 1.0 controls the radius, the 3 controls the subdivisions.
 const mat = new THREE.MeshStandardMaterial({
     color: 0xffffff,
     flatShading: true
@@ -69,8 +72,15 @@ scene.add(hemLight);
 //so we can reuse the animation.
 function animate(t = 0){
     requestAnimationFrame(animate);
-    //mesh.rotation.y = t * 0.0003; //every 10 secs.
+    mesh.rotation.y = t * 0.00023; 
     renderer.render(scene, camera)
+    const scale = 1 + Math.sin(t * 0.002) * 0.03;
+    mesh.scale.setScalar(scale);
+    mesh.scale.y = 1 + Math.sin(t * 0.002) * 0.06;
+    mesh.scale.x = 1 + Math.sin(t * 0.002 + 1) * 0.03;
+    mesh.scale.z = 1 + Math.sin(t * 0.002 + 3) * 0.02;
+
+
     controls.update();
 };
 
