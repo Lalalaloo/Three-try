@@ -69,18 +69,39 @@ const hemLight = new THREE.HemisphereLight(0xFFA6CD, 0xEB3B8B);
 scene.add(hemLight);
 
 
+let pulse = 0;
+let pulseSpeed = 0;
+
+window.addEventListener('click', () => {
+    pulse = 1;
+    pulseSpeed = 0.115
+})
+
+
+
+
 //so we can reuse the animation.
 function animate(t = 0){
     requestAnimationFrame(animate);
-    mesh.rotation.y = t * 0.00023; 
-    renderer.render(scene, camera)
+    //mesh.rotation.y = t * 0.00023; 
+    
     const scale = 1 + Math.sin(t * 0.002) * 0.03;
     mesh.scale.setScalar(scale);
-    mesh.scale.y = 1 + Math.sin(t * 0.002) * 0.06;
-    mesh.scale.x = 1 + Math.sin(t * 0.002 + 1) * 0.03;
-    mesh.scale.z = 1 + Math.sin(t * 0.002 + 3) * 0.02;
+    
+    if (pulse > 0.001){
+        pulseSpeed *= 0.98;
+        pulse*= 0.96;
+        const wobble = Math.sin(performance.now() * 0.01) * pulse;
+        mesh.scale.y = 1 + wobble * 0.06;
+        mesh.scale.x = 1 + wobble * 0.03;
+        mesh.scale.z = 1 + wobble * 0.02;
+    } else {
+        mesh.scale.lerp(new THREE.Vector3(1,1,1), 0.05)
+    }
+   
 
 
+    renderer.render(scene, camera) 
     controls.update();
 };
 
